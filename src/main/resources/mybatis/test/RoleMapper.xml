@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xq.springbootdemo.dao.RoleMapper" >
+
+<resultMap id="BaseResultMap" type="com.xq.springbootdemo.domain.Role" >
+  <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="user_id" property="user_id" jdbcType="INTEGER" />
+  <result column="role_name" property="role_name" jdbcType="VARCHAR" />
+</resultMap>
+
+  <sql id="Base_Column_List" >
+    id, user_id,role_name
+  </sql>
+  <!--查找-->
+  <select id="selRole" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from Role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!--删除-->
+  <delete id="delRole" parameterType="java.lang.Integer" >
+    delete from Role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+<!--插入-->
+  <insert id="insRole" parameterType="com.xq.springbootdemo.domain.Role" >
+    insert into Role (user_id,role_name)
+       values (#{user_id ,jdbcType=INTEGER}
+       ,#{role_name ,jdbcType=VARCHAR})
+  </insert>
+  <!--修改-->
+  <update id="updRole" parameterType="com.xq.springbootdemo.domain.Permission" >
+    update Role
+    set
+      user_id = #{user_id ,jdbcType=INTEGER},
+      role_name= #{role_name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getPermissionByRoleId" resultType="com.xq.springbootdemo.domain.Permission" parameterType="java.lang.Integer">
+    select *
+    from permission
+    where role_id=(
+        select id
+        from role
+        where id=#{id,jdbcType=INTEGER}
+    )
+  </select>
+</mapper>

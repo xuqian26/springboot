@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xq.springbootdemo.dao.UserMapper" >
+
+<resultMap id="BaseResultMap" type="com.xq.springbootdemo.domain.User" >
+  <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="name" property="name" jdbcType="VARCHAR" />
+  <result column="password" property="password" jdbcType="VARCHAR" />
+  <result column="sal" property="sal" jdbcType="DOUBLE" />
+
+</resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, sal,password
+  </sql>
+  <sql id="Base_Column_role" >
+    id, user_id,role_name
+  </sql>
+  <!--查找-->
+  <select id="selUser" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!--删除-->
+  <delete id="delUser" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+<!--插入-->
+  <insert id="insUser" parameterType="com.xq.springbootdemo.domain.User" >
+    insert into user (name ,sal,password)
+       values (#{name ,jdbcType=VARCHAR}
+       ,#{password ,jdbcType=VARCHAR},#{sal,jdbcType=DOUBLE})
+  </insert>
+  <!--修改-->
+  <update id="updUser" parameterType="com.xq.springbootdemo.domain.User" >
+    update user
+    set
+      NAME = #{name,jdbcType=VARCHAR},
+      SAL = #{sal,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getRoleByUserName"  resultType="com.xq.springbootdemo.domain.Role" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_role" />
+    from role
+    where user_id=(
+    select id
+    from user
+    where name=#{name,jdbcType=VARCHAR}
+    )
+  </select>
+<select id="selectByName" resultType="com.xq.springbootdemo.domain.User" parameterType="java.lang.String">
+  select <include refid="Base_Column_List" />
+  from user
+  where name=#{name,jdbcType=VARCHAR}
+</select>
+</mapper>
